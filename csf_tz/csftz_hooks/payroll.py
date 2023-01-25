@@ -20,7 +20,7 @@ def update_slips(payroll_entry):
             continue
         ss_doc.earnings = []
         ss_doc.deductions = []
-        ss_doc.save()
+        ss_doc.queue_action("save", timeout=4600)
         count += 1
 
     frappe.msgprint(_("{0} Salary Slips is updated".format(count)))
