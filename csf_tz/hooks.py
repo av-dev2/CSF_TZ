@@ -117,7 +117,6 @@ fixtures = [
                     "Sales Invoice-statutory_details",
                     "Sales Invoice-tra_control_number",
                     "Sales Invoice-witholding_tax_certificate_number",
-                    "Sales Order-cost_center",
                     "Sales Order-default_item_discount",
                     "Sales Order-posting_date",
                     "Stock Entry Detail-column_break_32",
