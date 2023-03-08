@@ -20,7 +20,10 @@
   "section_break_8",
   "sle_gle_reposting_start_date",
   "column_break_10",
-  "start_sle_gle_reporting"
+  "start_sle_gle_reporting",
+  "payroll_overrides_section",
+  "enable_fixed_working_days_per_month",
+  "working_days_per_month"
  ],
  "fields": [
   {
@@ -112,12 +115,31 @@
    "fieldname": "show_customer_outstanding_in_sales_order",
    "fieldtype": "Check",
    "label": "Show Customer Outstanding in Sales Order"
+  },
+  {
+   "fieldname": "payroll_overrides_section",
+   "fieldtype": "Section Break",
+   "label": "Payroll Overrides"
+  },
+  {
+   "default": "26",
+   "depends_on": "eval:doc.enable_fixed_working_days_per_month",
+   "fieldname": "working_days_per_month",
+   "fieldtype": "Int",
+   "label": "Working Days per Month",
+   "mandatory_depends_on": "eval:doc.enable_fixed_working_days_per_month"
+  },
+  {
+   "default": "0",
+   "fieldname": "enable_fixed_working_days_per_month",
+   "fieldtype": "Check",
+   "label": "Enable Fixed Working Days per Month"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2022-11-10 15:26:10.084553",
+ "modified": "2023-03-08 15:32:32.630582",
  "modified_by": "Administrator",
  "module": "CSF TZ",
  "name": "CSF TZ Settings",
