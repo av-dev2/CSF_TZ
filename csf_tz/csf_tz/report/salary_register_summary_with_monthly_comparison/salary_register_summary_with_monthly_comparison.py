@@ -99,10 +99,12 @@ def get_data(filters, company_currency, prev_salary_slips):
 		"difference_amount":  result
 	})
 	records.append({"department": "", "salary_component": "", "total_prev_month": "", "total_cur_month": "", "difference_amount": ""})
+	records.append({"department": "", "salary_component": "", "total_prev_month": "", "total_cur_month": "", "difference_amount": ""})
 
 	prev_ss_basic, prev_ss_earnings, prev_ss_deductions = get_salary_map(prev_salary_slips)
 
 	basic_data, total_prev_basic, total_cur_basic = get_basic_data(records, salary_slips, currency, company_currency, prev_ss_basic)
+	basic_data.append({"department": "", "salary_component": "", "total_prev_month": "", "total_cur_month": "", "difference_amount": ""})
 	basic_data.append({"department": "", "salary_component": "", "total_prev_month": "", "total_cur_month": "", "difference_amount": ""})
 
 	earnings_data, total_prev_earning, total_cur_earning = get_earnings_data(basic_data, salary_slips, currency, company_currency, prev_ss_earnings)
@@ -128,14 +130,15 @@ def get_data(filters, company_currency, prev_salary_slips):
 	})
 
 	earnings_data.append({"department": "", "salary_component": "", "total_prev_month": "", "total_cur_month": "", "difference_amount": ""})
+	earnings_data.append({"department": "", "salary_component": "", "total_prev_month": "", "total_cur_month": "", "difference_amount": ""})
 
 	data = get_deduction_data(earnings_data, salary_slips, currency, company_currency, prev_ss_deductions, cur_gross_pay, prev_gross_pay)
 	
-	return basic_data
+	return data
 
 
 def get_basic_data(data, salary_slips, currency, company_currency, prev_ss_basic):
-	ss_basic_map = get_ss_basic_map(salary_slips, currency, company_currency)
+	ss_basic_map = get_ss_basic_map(salary_slips)
 	
 	total_cur_basic = 0
 	unique_cur_basic_salary_components = []
@@ -219,7 +222,7 @@ def get_basic_data(data, salary_slips, currency, company_currency, prev_ss_basic
 
 
 def get_earnings_data(data, salary_slips, currency, company_currency, prev_ss_earnings):
-	ss_earning_map = get_ss_earning_map(salary_slips, currency, company_currency)
+	ss_earning_map = get_ss_earning_map(salary_slips)
 
 	total_cur_earning = 0
 	unique_cur_earnings_salary_components = []
@@ -230,7 +233,7 @@ def get_earnings_data(data, salary_slips, currency, company_currency, prev_ss_ea
 
 		for prev_earning_row in prev_ss_earnings:
 			if (
-				cur_earning_row.get("deaprtment") == prev_earning_row.get("department") and
+				cur_earning_row.get("department") == prev_earning_row.get("department") and
 				cur_earning_row.get("salary_component") == prev_earning_row.get("salary_component")
 			):
 				earn_amount_diff = flt(cur_earning_row.get("total_cur_month") - prev_earning_row.get("total_prev_month"), 2)
@@ -303,7 +306,7 @@ def get_earnings_data(data, salary_slips, currency, company_currency, prev_ss_ea
 
 
 def get_deduction_data(data, salary_slips, currency, company_currency, prev_ss_deductions, cur_gross_pay, prev_gross_pay):
-	ss_deduction_map = get_ss_ded_map(salary_slips, currency, company_currency)
+	ss_deduction_map = get_ss_ded_map(salary_slips)
 
 	total_cur_deduction = 0
 	unique_cur_deduction_salary_components = []
@@ -467,12 +470,7 @@ def get_prev_salary_slips(filters, company_currency, prev_first_date, prev_last_
 
 
 def get_prev_conditions(filters, company_currency):
-    conditions = ""
-    doc_status = {"Draft": 0, "Submitted": 1, "Cancelled": 2}
-
-    if filters.get("docstatus"):
-        conditions += "docstatus = {0}".format(
-            doc_status[filters.get("docstatus")])
+    conditions = "docstatus <= 1"
 
     if filters.get("prev_first_date"):
         conditions += " and start_date >= %(prev_first_date)s"
@@ -503,7 +501,7 @@ def get_salary_slips(filters, company_currency):
     return salary_slips or []
 
 
-def get_ss_basic_map(salary_slips, currency, company_currency):
+def get_ss_basic_map(salary_slips):
     ss_basic = frappe.db.sql("""
         SELECT ss.department, sd.salary_component, SUM(sd.amount) as total_cur_month 
         FROM `tabSalary Detail` sd, `tabSalary Slip` ss where sd.parent=ss.name 
@@ -518,7 +516,7 @@ def get_ss_basic_map(salary_slips, currency, company_currency):
     return ss_basic
 
 
-def get_ss_earning_map(salary_slips, currency, company_currency):
+def get_ss_earning_map(salary_slips):
     ss_earnings = frappe.db.sql("""
         SELECT ss.department, sd.salary_component, SUM(sd.amount) as total_cur_month 
         FROM `tabSalary Detail` sd, `tabSalary Slip` ss where sd.parent=ss.name 
@@ -533,7 +531,7 @@ def get_ss_earning_map(salary_slips, currency, company_currency):
     return ss_earnings
 
 
-def get_ss_ded_map(salary_slips, currency, company_currency):
+def get_ss_ded_map(salary_slips):
     ss_deductions = frappe.db.sql("""
         SELECT ss.department, sd.salary_component, SUM(sd.amount) as total_cur_month 
         FROM `tabSalary Detail` sd, `tabSalary Slip` ss where sd.parent=ss.name AND sd.parent in (%s)

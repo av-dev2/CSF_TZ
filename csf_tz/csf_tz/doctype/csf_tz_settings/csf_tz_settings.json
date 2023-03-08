@@ -92,7 +92,7 @@
    "label": "Enable Dependent Auto Permission"
   },
   {
-   "default": "0",
+   "default": "1",
    "description": "if ticked, a popup message showing description will appear on sales invoice when item qty remaining is less to 0",
    "fieldname": "item_qty_poppup_message",
    "fieldtype": "Check",
