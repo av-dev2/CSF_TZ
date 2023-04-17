@@ -443,6 +443,9 @@ doc_events = {
     "Custom DocPerm": {
         "validate": "csf_tz.csftz_hooks.custom_docperm.grant_dependant_access",
     },
+    "Attendance": {
+        "validate": "csf_tz.csftz_hooks.attendance.process_overtime",
+    },
 }
 
 # Scheduled Tasks
