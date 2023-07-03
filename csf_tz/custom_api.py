@@ -1702,7 +1702,7 @@ def batch_splitting(doc, method):
     if doc.is_return == 1:
         return 
 
-    if not doc.update_stock == 0:
+    if doc.update_stock == 0:
         return
        
     if not frappe.db.get_single_value('CSF TZ Settings', "allow_batch_splitting"):
@@ -2042,7 +2042,7 @@ def validate_grand_total(doc, method):
     """Validate grand total of sales invoice"""
 
     if len(doc.items) > 0:
-        total_amount = sum([item.amount for item in doc.items])
+        total_amount = doc.rounded_total or doc.grand_total
 
         payment_amount = sum([payment.amount for payment in doc.payments])
 
