@@ -24,6 +24,8 @@
   "start_sle_gle_reporting",
   "payroll_overrides_section",
   "enable_payroll_approval",
+  "override_email_message",
+  "email_message",
   "column_break_u48fq",
   "enable_fixed_working_days_per_month",
   "working_days_per_month",
@@ -180,12 +182,25 @@
    "fieldname": "override_fetch_shift_details",
    "fieldtype": "Check",
    "label": "Override Fetch Shift Details"
+  },
+  {
+   "default": "0",
+   "fieldname": "override_email_message",
+   "fieldtype": "Check",
+   "label": "Override Email Message"
+  },
+  {
+   "depends_on": "eval: doc.override_email_message == 1",
+   "fieldname": "email_message",
+   "fieldtype": "Code",
+   "label": "Email Message",
+   "mandatory_depends_on": "eval: doc.override_email_message == 1"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-09-18 16:05:54.609687",
+ "modified": "2024-02-28 17:25:44.592000",
  "modified_by": "Administrator",
  "module": "CSF TZ",
  "name": "CSF TZ Settings",
